@@ -6,6 +6,9 @@ from pprint import pprint
 # e.g. --voc-data-dir='./data/'
 
 class Config:
+    """
+    超参数，这里列出的是默认值，使用命令行可以对这些参数值进行覆盖
+    """
     # data
     voc_data_dir = '/home/tianxing/datasets/VOCdevkit/VOC2007/'
     min_size = 600  # image resize
@@ -51,6 +54,9 @@ class Config:
     caffe_pretrain_path = 'checkpoints/vgg16_caffe.pth'
 
     def _parse(self, kwargs):
+        """
+        解析命令行中的参数，对默认值进行覆盖
+        """
         state_dict = self._state_dict()
         for k, v in kwargs.items():
             if k not in state_dict:

@@ -126,5 +126,5 @@ def train(**kwargs):
 
 if __name__ == '__main__':
     import fire
-
+    # 使用fire库将程序的全部内容暴露给命令行
     fire.Fire()

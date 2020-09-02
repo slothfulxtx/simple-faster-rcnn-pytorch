@@ -95,8 +95,11 @@ class VOCBboxDataset:
             i (int): The index of the example.
 
         Returns:
-            tuple of an image and bounding boxes
-
+            (img, bbox, label, difficult)
+            img : (C,H,W) np.float32 RGB
+            bbox : (bbox_num, 4) -> (y_{min}, x_{min}, y_{max}, x_{max}) np.float32
+            label : (bbox_num,) np.int32
+            difficult : (bbox_num, ) np.bool
         """
         id_ = self.ids[i]
         anno = ET.parse(

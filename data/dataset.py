@@ -98,6 +98,24 @@ class Transform(object):
 
 
 class Dataset:
+
+    """
+    训练使用的数据集
+    __getitem__ : 返回图片，包围盒，标签以及归一化图片时的放缩倍数 
+        img : 
+            shape = (channel, height/y-axis, width/x-axis)
+            dtype = float32
+            归一化处理后的图片，归一方法根据pytorch还是caffe不一样
+            
+        bbox :
+            shape = (num_bbox, 4) => (y_{min}, x_{min}, y_{max}, x_{max})
+            dtype = float32
+        label : 
+            shape = (num_bbox, )
+            dtype = int32
+        scale : 
+            使用Transform将图片放缩到指定范围，bbox也随之发生改变
+    """
     def __init__(self, opt):
         self.opt = opt
         self.db = VOCBboxDataset(opt.voc_data_dir)
