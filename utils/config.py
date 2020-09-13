@@ -34,7 +34,7 @@ class Config:
 
     # preset
     data = 'voc'
-    pretrained_model = 'vgg16'
+    model = 'vgg16'
 
     # training
     epoch = 14

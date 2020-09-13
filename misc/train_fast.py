@@ -100,7 +100,7 @@ def train(**kwargs):
 
     eval_result = eval(test_dataloader, faster_rcnn, test_num=1e100)
     print('eval_result')
-    trainer.save(mAP=eval_result['map'])
+    trainer.save(mAP="%.4f" % eval_result['map'])
 
 if __name__ == '__main__':
     import fire
