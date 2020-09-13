@@ -64,7 +64,7 @@ class FasterRCNNResNet101(FasterRCNN):
                  ):
         extractor, classifier = decom_resnet101()
         rpn = RegionProposalNetwork(
-            1024,1024,
+            1024,512,
             ratios=ratios,
             anchor_scales=anchor_scales,
             feat_stride=self.feat_stride
@@ -132,10 +132,10 @@ class ResNet101RoIHead(nn.Module):
         xy_indices_and_rois = indices_and_rois[:, [0, 2, 1, 4, 3]]
         indices_and_rois =  xy_indices_and_rois.contiguous()
 
-        pool = self.roi(x, indices_and_rois)
-        fc7 = self.classifier(pool)
-        roi_cls_locs = self.cls_loc(fc7)
-        roi_scores = self.score(fc7)
+        pooled_features = self.roi(x, indices_and_rois)
+        x = self.classifier(pooled_features)
+        roi_cls_locs = self.cls_loc(x)
+        roi_scores = self.score(x)
         return roi_cls_locs, roi_scores
 
 
