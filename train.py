@@ -93,7 +93,7 @@ def train(**kwargs):
             if (ii + 1) % opt.plot_every == 0:
 
                 # plot loss
-                trainer.vis.plot_many(trainer.get_meter_data())
+                trainer.vis.plot_many(trainer.losses_data())
 
                 # generate plotted image
 

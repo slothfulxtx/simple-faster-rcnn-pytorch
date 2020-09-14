@@ -236,9 +236,6 @@ class FasterRCNNTrainer(nn.Module):
         self.roi_cm.reset()
         self.rpn_cm.reset()
 
-    def get_meter_data(self):
-        return {k: v.value()[0] for k, v in self.meters.items()}
-
     def losses_data(self):
         return {k: v.value()[0] for k, v in self.meters.items()}
 
