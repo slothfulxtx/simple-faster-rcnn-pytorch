@@ -1,3 +1,5 @@
+from data.voc_dataset import VOC_BBOX_LABEL_NAMES
+from matplotlib import pyplot as plot
 import time
 
 import numpy as np
@@ -6,33 +8,6 @@ import torch as t
 import visdom
 
 matplotlib.use('Agg')
-from matplotlib import pyplot as plot
-
-# from data.voc_dataset import VOC_BBOX_LABEL_NAMES
-
-
-VOC_BBOX_LABEL_NAMES = (
-    'fly',
-    'bike',
-    'bird',
-    'boat',
-    'pin',
-    'bus',
-    'c',
-    'cat',
-    'chair',
-    'cow',
-    'table',
-    'dog',
-    'horse',
-    'moto',
-    'p',
-    'plant',
-    'shep',
-    'sofa',
-    'train',
-    'tv',
-)
 
 
 def vis_image(img, ax=None):
@@ -166,6 +141,17 @@ def visdom_bbox(*args, **kwargs):
     return data
 
 
+def vis_dict(*args):
+    html = ''
+    for arg in args:
+        for k, v in arg.items():
+            if type(v) == float:
+                html += "%s &nbsp; : &nbsp; %.5f <br />" % (str(k), v)
+            else:
+                html += "%s &nbsp; : &nbsp; %s <br />" % (str(k), str(v))
+    return html
+
+
 class Visualizer(object):
     """
     wrapper for visdom
@@ -175,7 +161,8 @@ class Visualizer(object):
     """
 
     def __init__(self, env='default', **kwargs):
-        self.vis = visdom.Visdom('localhost',env=env, use_incoming_socket=False, **kwargs)
+        self.vis = visdom.Visdom('localhost', env=env,
+                                 use_incoming_socket=False, **kwargs)
         self._vis_kw = kwargs
 
         # e.g.('loss',23) the 23th value of loss
@@ -234,7 +221,7 @@ class Visualizer(object):
         self.log({'loss':1,'lr':0.0001})
         """
         self.log_text += ('[{time}] {info} <br>'.format(
-            time=time.strftime('%m%d_%H%M%S'), \
+            time=time.strftime('%m%d_%H%M%S'),
             info=info))
         self.vis.text(self.log_text, win)
 
@@ -250,7 +237,8 @@ class Visualizer(object):
         }
 
     def load_state_dict(self, d):
-        self.vis = visdom.Visdom(env=d.get('env', self.vis.env), **(self.d.get('vis_kw')))
+        self.vis = visdom.Visdom(
+            env=d.get('env', self.vis.env), **(self.d.get('vis_kw')))
         self.log_text = d.get('log_text', '')
         self.index = d.get('index', dict())
         return self

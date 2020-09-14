@@ -1,18 +1,17 @@
 from pprint import pprint
 
 
-# Default Configs for training
-# NOTE that, config items could be overwriten by passing argument through command line.
-# e.g. --voc-data-dir='./data/'
-
 class Config:
     """
     超参数，这里列出的是默认值，使用命令行可以对这些参数值进行覆盖
     """
+    debug = False
+
     # data
+    s3d_data_dir = ''
     voc_data_dir = '/home/tianxing/datasets/VOCdevkit/VOC2007/'
     min_size = 600  # image resize
-    max_size = 1000 # image resize
+    max_size = 1000  # image resize
     num_workers = 8
     test_num_workers = 8
 
@@ -26,7 +25,6 @@ class Config:
     lr_decay = 0.1  # 1e-3 -> 1e-4
     lr = 1e-3
 
-
     # visualization
     env = 'faster-rcnn'  # visdom env
     port = 8097
@@ -37,23 +35,22 @@ class Config:
     model = 'vgg16'
 
     # training
-    epoch = 14
+    epoch = 20
 
+    use_adam = False  # Use Adam optimizer
+    use_chainer = False  # try match everything as chainer
+    use_drop = False  # use dropout in RoIHead
 
-    use_adam = False # Use Adam optimizer
-    use_chainer = False # try match everything as chainer
-    use_drop = False # use dropout in RoIHead
-    # debug
-    debug_file = '/tmp/debugf'
+    train_num = 1000000000
+    test_num = 1000000000
 
-    test_num = 10000
     # model
     load_path = None
 
-    caffe_pretrain = False # use caffe pretrained model instead of torchvision
+    caffe_pretrain = False  # use caffe pretrained model instead of torchvision
     caffe_pretrain_path = 'checkpoints/vgg16_caffe.pth'
 
-    def _parse(self, kwargs):
+    def parse(self, kwargs):
         """
         解析命令行中的参数，对默认值进行覆盖
         """
@@ -68,7 +65,7 @@ class Config:
         print('==========end============')
 
     def _state_dict(self):
-        return {k: getattr(self, k) for k, _ in Config.__dict__.items() \
+        return {k: getattr(self, k) for k, _ in Config.__dict__.items()
                 if not k.startswith('_')}
 
 

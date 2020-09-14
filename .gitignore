@@ -142,3 +142,6 @@ nohup.out
 
 # checkpoint
 /checkpoints/
+
+#scripts
+*.sh

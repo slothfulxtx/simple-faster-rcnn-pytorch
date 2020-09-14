@@ -1,7 +1,8 @@
-from __future__ import  absolute_import
-from __future__ import  division
+from __future__ import absolute_import
+from __future__ import division
 import torch as t
 from data.voc_dataset import VOCBboxDataset
+from data.s3d_dataset import S3DBboxDataset
 from skimage import transform as sktsf
 from torchvision import transforms as tvtsf
 from data import util
@@ -64,7 +65,8 @@ def preprocess(img, min_size=600, max_size=1000):
     scale2 = max_size / max(H, W)
     scale = min(scale1, scale2)
     img = img / 255.
-    img = sktsf.resize(img, (C, H * scale, W * scale), mode='reflect',anti_aliasing=False)
+    img = sktsf.resize(img, (C, H * scale, W * scale),
+                       mode='reflect', anti_aliasing=False)
     # both the longer and shorter should be less than
     # max_size and min_size
     if opt.caffe_pretrain:
@@ -97,7 +99,7 @@ class Transform(object):
         return img, bbox, label, scale
 
 
-class Dataset:
+class TrainDataset:
 
     """
     训练使用的数据集
@@ -106,7 +108,7 @@ class Dataset:
             shape = (channel, height/y-axis, width/x-axis)
             dtype = float32
             归一化处理后的图片，归一方法根据pytorch还是caffe不一样
-            
+
         bbox :
             shape = (num_bbox, 4) => (y_{min}, x_{min}, y_{max}, x_{max})
             dtype = float32
@@ -116,9 +118,13 @@ class Dataset:
         scale : 
             使用Transform将图片放缩到指定范围，bbox也随之发生改变
     """
+
     def __init__(self, opt):
         self.opt = opt
-        self.db = VOCBboxDataset(opt.voc_data_dir)
+        if opt.data == 'voc':
+            self.db = VOCBboxDataset(opt.voc_data_dir)
+        elif opt.data == 's3d':
+            self.db = S3DBboxDataset(opt.s3d_data_dir)
         self.tsf = Transform(opt.min_size, opt.max_size)
 
     def __getitem__(self, idx):
@@ -136,7 +142,8 @@ class Dataset:
 class TestDataset:
     def __init__(self, opt, split='test', use_difficult=True):
         self.opt = opt
-        self.db = VOCBboxDataset(opt.voc_data_dir, split=split, use_difficult=use_difficult)
+        self.db = VOCBboxDataset(
+            opt.voc_data_dir, split=split, use_difficult=use_difficult)
 
     def __getitem__(self, idx):
         ori_img, bbox, label, difficult = self.db.get_example(idx)
